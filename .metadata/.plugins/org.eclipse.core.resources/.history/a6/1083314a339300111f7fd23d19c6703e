@@ -1,0 +1,296 @@
+package hotel.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.ResultSet;
+
+public class AddRooms extends JFrame implements ActionListener {
+
+    JComboBox<String> floor;
+    JComboBox<String> roomType;
+
+    JTextField tfroom;
+    JTextField tfprice;
+
+    JButton add;
+    JButton cancel;
+
+    AddRooms() {
+
+        setTitle("Add Room");
+        setBounds(300, 150, 800, 450);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        getContentPane().setBackground(Color.WHITE);
+
+        // ================= HEADING =================
+
+        JLabel heading = new JLabel("ADD ROOM");
+        heading.setBounds(120, 20, 200, 30);
+        heading.setFont(new Font("Tahoma", Font.BOLD, 22));
+        add(heading);
+
+        // ================= FLOOR =================
+
+        JLabel lblFloor = new JLabel("Floor");
+        lblFloor.setBounds(40, 75, 120, 25);
+        add(lblFloor);
+
+        String floors[] = {
+            "1st Floor",
+            "2nd Floor",
+            "3rd Floor",
+            "4th Floor"
+        };
+
+        floor = new JComboBox<>(floors);
+        floor.setBounds(170, 75, 150, 25);
+        add(floor);
+
+        // ================= ROOM TYPE =================
+
+        JLabel lblType = new JLabel("Room Type");
+        lblType.setBounds(40, 120, 120, 25);
+        add(lblType);
+
+        String types[] = {
+            "Single",
+            "Double",
+            "Deluxe",
+            "Suite"
+        };
+
+        roomType = new JComboBox<>(types);
+        roomType.setBounds(170, 120, 150, 25);
+        add(roomType);
+
+        roomType.addActionListener(e -> updatePrice());
+
+        // ================= ROOM NUMBER =================
+
+        JLabel lblRoom = new JLabel("Room Number");
+        lblRoom.setBounds(40, 165, 120, 25);
+        add(lblRoom);
+
+        tfroom = new JTextField();
+        tfroom.setBounds(170, 165, 150, 25);
+        tfroom.setEditable(false);
+        add(tfroom);
+
+        // ================= PRICE =================
+
+        JLabel lblPrice = new JLabel("Price");
+        lblPrice.setBounds(40, 210, 120, 25);
+        add(lblPrice);
+
+        tfprice = new JTextField();
+        tfprice.setBounds(170, 210, 150, 25);
+        tfprice.setEditable(false);
+        add(tfprice);
+
+        // ================= INFORMATION =================
+
+        JLabel info = new JLabel(
+            "<html><b>Room Number and Price are assigned automatically.</b></html>"
+        );
+
+        info.setBounds(40, 250, 300, 40);
+        add(info);
+
+        // ================= ADD =================
+
+        add = new JButton("ADD ROOM");
+        add.setBounds(60, 320, 120, 35);
+        add.setBackground(Color.BLACK);
+        add.setForeground(Color.WHITE);
+        add.addActionListener(this);
+        add(add);
+
+        // ================= CANCEL =================
+
+        cancel = new JButton("CANCEL");
+        cancel.setBounds(200, 320, 120, 35);
+        cancel.setBackground(Color.BLACK);
+        cancel.setForeground(Color.WHITE);
+        cancel.addActionListener(this);
+        add(cancel);
+
+        // ================= IMAGE =================
+
+        ImageIcon i1 = new ImageIcon(
+            getClass().getResource("/icons/rooms.jpg")
+        );
+
+        Image i2 = i1.getImage().getScaledInstance(
+            400,
+            280,
+            Image.SCALE_SMOOTH
+        );
+
+        ImageIcon i3 = new ImageIcon(i2);
+
+        JLabel image = new JLabel(i3);
+        image.setBounds(360, 60, 400, 280);
+        add(image);
+
+        // Generate first room number
+        generateRoomNumber();
+
+        setVisible(true);
+    }
+
+    // =====================================================
+    // UPDATE PRICE
+    // =====================================================
+
+    void updatePrice() {
+
+        String type = (String) roomType.getSelectedItem();
+
+        if (type.equals("Single")) {
+
+            tfprice.setText("2500");
+
+        } else if (type.equals("Double")) {
+
+            tfprice.setText("3500");
+
+        } else if (type.equals("Deluxe")) {
+
+            tfprice.setText("4500");
+
+        } else if (type.equals("Suite")) {
+
+            tfprice.setText("6000");
+        }
+    }
+
+    // =====================================================
+    // GENERATE ROOM NUMBER
+    // =====================================================
+
+    void generateRoomNumber() {
+
+        try {
+
+            Conn conn = new Conn();
+
+            String selectedFloor =
+                (String) floor.getSelectedItem();
+
+            int floorNumber = 1;
+
+            if (selectedFloor.equals("1st Floor")) {
+                floorNumber = 1;
+
+            } else if (selectedFloor.equals("2nd Floor")) {
+                floorNumber = 2;
+
+            } else if (selectedFloor.equals("3rd Floor")) {
+                floorNumber = 3;
+
+            } else if (selectedFloor.equals("4th Floor")) {
+                floorNumber = 4;
+            }
+
+            int start = floorNumber * 100 + 1;
+            int end = floorNumber * 100 + 99;
+
+            String query =
+                "SELECT room_no FROM room " +
+                "WHERE room_no >= '" + start + "' " +
+                "AND room_no <= '" + end + "' " +
+                "ORDER BY room_no";
+
+            ResultSet rs = conn.s.executeQuery(query);
+
+            int nextRoom = start;
+
+            while (rs.next()) {
+
+                int currentRoom =
+                    Integer.parseInt(rs.getString("room_no"));
+
+                if (currentRoom == nextRoom) {
+
+                    nextRoom++;
+
+                } else if (currentRoom > nextRoom) {
+
+                    break;
+                }
+            }
+
+            tfroom.setText(String.valueOf(nextRoom));
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+        }
+    }
+
+    // =====================================================
+    // ACTION PERFORMED
+    // =====================================================
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+
+        if (ae.getSource() == add) {
+
+            String room =
+                tfroom.getText();
+
+            String type =
+                (String) roomType.getSelectedItem();
+
+            String price =
+                tfprice.getText();
+
+            try {
+
+                Conn conn = new Conn();
+
+                // Automatically Available and Clean
+
+                String query =
+                    "INSERT INTO room " +
+                    "(room_no, availability, cleaning_status, price, bed_type) " +
+                    "VALUES('" +
+                    room + "','Available','Clean','" +
+                    price + "','" +
+                    type + "')";
+
+                conn.s.executeUpdate(query);
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Room " + room +
+                    " Added Successfully!"
+                );
+
+                setVisible(false);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                JOptionPane.showMessageDialog(
+                    this,
+                    "Unable to add room."
+                );
+            }
+
+        } else if (ae.getSource() == cancel) {
+
+            setVisible(false);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        new AddRooms();
+    }
+}

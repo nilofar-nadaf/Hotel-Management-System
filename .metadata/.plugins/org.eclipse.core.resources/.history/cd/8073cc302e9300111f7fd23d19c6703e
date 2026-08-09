@@ -1,0 +1,139 @@
+package hotel.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class UpdateStatus extends JFrame implements ActionListener {
+
+    JComboBox<String> cbid;
+    JComboBox<String> cbstatus;
+
+    JButton update, cancel;
+
+    UpdateStatus() {
+
+        setTitle("Update Customer Status");
+        setBounds(350, 200, 500, 350);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // ================= HEADING =================
+
+        JLabel heading = new JLabel("UPDATE CUSTOMER STATUS");
+        heading.setBounds(100, 20, 350, 30);
+        heading.setFont(new Font("Tahoma", Font.BOLD, 20));
+        add(heading);
+
+        // ================= CUSTOMER ID =================
+
+        JLabel lblid = new JLabel("Customer ID");
+        lblid.setBounds(50, 80, 120, 25);
+        add(lblid);
+
+        /*
+         * You can replace these IDs with the IDs
+         * available in your customer table.
+         */
+
+        String customerIds[] = {
+            "1",
+            "2",
+            "3",
+            "4",
+            "5"
+        };
+
+        cbid = new JComboBox<>(customerIds);
+        cbid.setBounds(200, 80, 180, 25);
+        add(cbid);
+
+        // ================= STATUS =================
+
+        JLabel lblstatus = new JLabel("Status");
+        lblstatus.setBounds(50, 130, 120, 25);
+        add(lblstatus);
+
+        String status[] = {
+            "Checked In",
+            "Checked Out"
+        };
+
+        cbstatus = new JComboBox<>(status);
+        cbstatus.setBounds(200, 130, 180, 25);
+        add(cbstatus);
+
+        // ================= UPDATE BUTTON =================
+
+        update = new JButton("UPDATE");
+        update.setBounds(100, 200, 110, 30);
+        update.setBackground(Color.BLACK);
+        update.setForeground(Color.WHITE);
+        update.addActionListener(this);
+        add(update);
+
+        // ================= CANCEL BUTTON =================
+
+        cancel = new JButton("CANCEL");
+        cancel.setBounds(250, 200, 110, 30);
+        cancel.setBackground(Color.BLACK);
+        cancel.setForeground(Color.WHITE);
+        cancel.addActionListener(this);
+        add(cancel);
+
+        setVisible(true);
+    }
+
+    // ================= ACTION PERFORMED =================
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+
+        if (ae.getSource() == update) {
+
+            String id =
+                    (String) cbid.getSelectedItem();
+
+            String status =
+                    (String) cbstatus.getSelectedItem();
+
+            try {
+
+                Conn conn = new Conn();
+
+                String query =
+                        "UPDATE customer SET " +
+                        "status = '" + status + "' " +
+                        "WHERE id = '" + id + "'";
+
+                conn.s.executeUpdate(query);
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Customer Status Updated Successfully"
+                );
+
+                setVisible(false);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                JOptionPane.showMessageDialog(
+                        null,
+                        "Error updating customer status"
+                );
+            }
+
+        } else if (ae.getSource() == cancel) {
+
+            setVisible(false);
+        }
+    }
+
+    public static void main(String[] args) {
+
+        new UpdateStatus();
+
+    }
+}

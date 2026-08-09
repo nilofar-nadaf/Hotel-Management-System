@@ -1,0 +1,405 @@
+package hotel.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.sql.ResultSet;
+
+public class NewCustomer extends JFrame implements ActionListener {
+
+    JComboBox<String> cbId, cbRoom;
+    JTextField tfNumber, tfName, tfCountry, tfCheckin, tfDeposit;
+    JRadioButton male, female;
+    JButton add, back;
+
+    NewCustomer() {
+
+        setTitle("New Customer Form");
+        setBounds(300, 100, 850, 600);
+        setLayout(null);
+        getContentPane().setBackground(Color.WHITE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        // ================= HEADING =================
+
+        JLabel heading = new JLabel("NEW CUSTOMER FORM");
+        heading.setBounds(250, 20, 350, 35);
+        heading.setFont(new Font("Tahoma", Font.BOLD, 25));
+        add(heading);
+
+        // ================= ID TYPE =================
+
+        JLabel lblId = new JLabel("ID Type");
+        lblId.setBounds(40, 80, 120, 25);
+        add(lblId);
+
+        cbId = new JComboBox<>();
+
+        cbId.addItem("Aadhar Card");
+        cbId.addItem("Passport");
+        cbId.addItem("Driving License");
+        cbId.addItem("Voter ID");
+
+        cbId.setBounds(180, 80, 180, 25);
+        add(cbId);
+
+        // ================= ID NUMBER =================
+
+        JLabel lblNumber = new JLabel("ID Number");
+        lblNumber.setBounds(40, 120, 120, 25);
+        add(lblNumber);
+
+        tfNumber = new JTextField();
+        tfNumber.setBounds(180, 120, 180, 25);
+        add(tfNumber);
+
+        // ================= NAME =================
+
+        JLabel lblName = new JLabel("Name");
+        lblName.setBounds(40, 160, 120, 25);
+        add(lblName);
+
+        tfName = new JTextField();
+        tfName.setBounds(180, 160, 180, 25);
+        add(tfName);
+
+        // ================= GENDER =================
+
+        JLabel lblGender = new JLabel("Gender");
+        lblGender.setBounds(40, 200, 120, 25);
+        add(lblGender);
+
+        male = new JRadioButton("Male");
+        male.setBackground(Color.WHITE);
+        male.setBounds(180, 200, 70, 25);
+        add(male);
+
+        female = new JRadioButton("Female");
+        female.setBackground(Color.WHITE);
+        female.setBounds(260, 200, 90, 25);
+        add(female);
+
+        ButtonGroup bg = new ButtonGroup();
+        bg.add(male);
+        bg.add(female);
+
+        // ================= COUNTRY =================
+
+        JLabel lblCountry = new JLabel("Country");
+        lblCountry.setBounds(40, 240, 120, 25);
+        add(lblCountry);
+
+        tfCountry = new JTextField();
+        tfCountry.setBounds(180, 240, 180, 25);
+        add(tfCountry);
+
+        // ================= ROOM =================
+
+        JLabel lblRoom = new JLabel("Room Number");
+        lblRoom.setBounds(40, 280, 120, 25);
+        add(lblRoom);
+
+        cbRoom = new JComboBox<>();
+        cbRoom.setBounds(180, 280, 180, 25);
+        add(cbRoom);
+
+        // Load available rooms from database
+        loadAvailableRooms();
+
+        // ================= CHECK-IN TIME =================
+
+        JLabel lblCheckin = new JLabel("Check-In Time");
+        lblCheckin.setBounds(40, 320, 120, 25);
+        add(lblCheckin);
+
+        tfCheckin = new JTextField();
+
+        tfCheckin.setText(
+                java.time.LocalDateTime.now().toString()
+        );
+
+        tfCheckin.setEditable(false);
+        tfCheckin.setBounds(180, 320, 180, 25);
+        add(tfCheckin);
+
+        // ================= DEPOSIT =================
+
+        JLabel lblDeposit = new JLabel("Deposit");
+        lblDeposit.setBounds(40, 360, 120, 25);
+        add(lblDeposit);
+
+        tfDeposit = new JTextField();
+        tfDeposit.setBounds(180, 360, 180, 25);
+        add(tfDeposit);
+
+        // ================= ADD BUTTON =================
+
+        add = new JButton("ADD");
+        add.setBounds(80, 430, 100, 30);
+        add.setBackground(Color.BLACK);
+        add.setForeground(Color.WHITE);
+        add.addActionListener(this);
+        add(add);
+
+        // ================= BACK BUTTON =================
+
+        back = new JButton("BACK");
+        back.setBounds(230, 430, 100, 30);
+        back.setBackground(Color.BLACK);
+        back.setForeground(Color.WHITE);
+        back.addActionListener(this);
+        add(back);
+
+        // ================= IMAGE =================
+        ImageIcon i1 = new ImageIcon(getClass().getResource("/icons/home.jpg"));
+        
+     
+            Image i2 = i1.getImage().getScaledInstance(
+                    350,
+                    350,
+                    Image.SCALE_SMOOTH
+            );
+
+            ImageIcon i3 = new ImageIcon(i2);
+
+            JLabel image = new JLabel(i3);
+            image.setBounds(430, 100, 350, 350);
+
+            add(image);
+      
+
+        setVisible(true);
+    }
+
+    // =========================================================
+    // LOAD AVAILABLE ROOMS
+    // =========================================================
+
+    private void loadAvailableRooms() {
+
+        try {
+
+            Conn conn = new Conn();
+
+            String query =
+                    "SELECT room_no FROM room " +
+                    "WHERE availability = 'Available'";
+
+            ResultSet rs = conn.s.executeQuery(query);
+
+            while (rs.next()) {
+
+                String roomNumber =
+                        rs.getString("room_no");
+
+                cbRoom.addItem(roomNumber);
+            }
+
+            // If there are no available rooms
+
+            if (cbRoom.getItemCount() == 0) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No rooms are currently available."
+                );
+            }
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Unable to load available rooms."
+            );
+        }
+    }
+
+    // =========================================================
+    // BUTTON ACTION
+    // =========================================================
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+
+        // =====================================================
+        // ADD CUSTOMER
+        // =====================================================
+
+        if (ae.getSource() == add) {
+
+            String idType =
+                    (String) cbId.getSelectedItem();
+
+            String idNumber =
+                    tfNumber.getText().trim();
+
+            String name =
+                    tfName.getText().trim();
+
+            String gender = "";
+
+            if (male.isSelected()) {
+                gender = "Male";
+            } else if (female.isSelected()) {
+                gender = "Female";
+            }
+
+            String country =
+                    tfCountry.getText().trim();
+
+            String room =
+                    (String) cbRoom.getSelectedItem();
+
+            String checkin =
+                    tfCheckin.getText();
+
+            String deposit =
+                    tfDeposit.getText().trim();
+
+            // =================================================
+            // VALIDATION
+            // =================================================
+
+            if (idNumber.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter ID Number."
+                );
+
+                return;
+            }
+
+            if (name.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter customer name."
+                );
+
+                return;
+            }
+
+            if (gender.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please select gender."
+                );
+
+                return;
+            }
+
+            if (country.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter country."
+                );
+
+                return;
+            }
+
+            if (room == null) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No available room selected."
+                );
+
+                return;
+            }
+
+            if (deposit.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Please enter deposit amount."
+                );
+
+                return;
+            }
+
+            // =================================================
+            // DATABASE
+            // =================================================
+
+            try {
+
+                Conn conn = new Conn();
+
+                // ---------------------------------------------
+                // Insert customer
+                // ---------------------------------------------
+
+                String query =
+                        "INSERT INTO customer " +
+                        "(id_type, id_number, name, gender, country, " +
+                        "room_no, checkin_time, deposit) " +
+                        "VALUES ('"
+                        + idType + "','"
+                        + idNumber + "','"
+                        + name + "','"
+                        + gender + "','"
+                        + country + "','"
+                        + room + "','"
+                        + checkin + "','"
+                        + deposit + "')";
+
+                conn.s.executeUpdate(query);
+
+                // ---------------------------------------------
+                // Change room status
+                // Available → Occupied
+                // ---------------------------------------------
+
+                String updateRoom =
+                        "UPDATE room SET availability = 'Occupied' " +
+                        "WHERE room_no = '" + room + "'";
+
+                conn.s.executeUpdate(updateRoom);
+
+                // ---------------------------------------------
+                // Success message
+                // ---------------------------------------------
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Customer Added Successfully!\n" +
+                        "Room " + room + " is now Occupied."
+                );
+
+                setVisible(false);
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Error: " + e.getMessage()
+                );
+            }
+        }
+
+        // =====================================================
+        // BACK
+        // =====================================================
+
+        else if (ae.getSource() == back) {
+
+            setVisible(false);
+        }
+    }
+
+    // =========================================================
+    // MAIN
+    // =========================================================
+
+    public static void main(String[] args) {
+
+        new NewCustomer();
+    }
+}

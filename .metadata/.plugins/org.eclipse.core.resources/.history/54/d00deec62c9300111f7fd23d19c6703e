@@ -1,0 +1,76 @@
+package hotel.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+
+public class Dashboard extends JFrame {
+
+    Dashboard() {
+
+        setTitle("Hotel Management System");
+        setSize(891, 506);
+        setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        ImageIcon i1 = new ImageIcon(getClass().getResource("/icons/dashboard.jpg"));
+        Image img = i1.getImage().getScaledInstance(891, 506, Image.SCALE_SMOOTH);
+        ImageIcon i2 = new ImageIcon(img);
+
+        JLabel image = new JLabel(i2);
+        image.setBounds(0, 0, 891, 506);
+        image.setLayout(null);
+
+        JLabel heading = new JLabel("THE TAJ GROUP WELCOMES YOU!!!");
+        heading.setBounds(180, 20, 600, 40);
+        heading.setFont(new Font("Tahoma", Font.BOLD, 30));
+        heading.setForeground(Color.BLACK);
+        image.add(heading);
+
+        add(image);
+
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+
+        JMenu hotel = new JMenu("HOTEL MANAGEMENT");
+        menuBar.add(hotel);
+
+        hotel.add(new JMenuItem("Reception"));
+        hotel.setForeground(Color.RED);
+        hotel.add(new JMenuItem("Logout"));
+        
+//        JMenu admin = new JMenu("ADMIN");
+//        admin.setForeground(Color.BLACK);
+//        menuBar.add(admin);
+//
+//        admin.add(new JMenuItem("ADD EMPLOYEE"));
+//        admin.add(new JMenuItem("ADD ROOMS"));
+//        admin.add(new JMenuItem("ADD DRIVERS"));
+
+        JMenu admin = new JMenu("ADMIN");
+        admin.setForeground(Color.BLACK);
+        menuBar.add(admin);
+
+        JMenuItem addEmployee = new JMenuItem("ADD EMPLOYEE");
+        addEmployee.addActionListener(e -> {
+            new AddEmployee();
+        });
+        admin.add(addEmployee);
+
+        JMenuItem addRooms = new JMenuItem("ADD ROOMS");
+        addRooms.addActionListener(e -> {
+            new AddRooms();
+        });
+        admin.add(addRooms);
+
+        JMenuItem addDrivers = new JMenuItem("ADD DRIVERS");
+        addDrivers.addActionListener(e -> {
+            new AddDriver();
+        });
+        admin.add(addDrivers);
+        setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        new Dashboard();
+    }
+}

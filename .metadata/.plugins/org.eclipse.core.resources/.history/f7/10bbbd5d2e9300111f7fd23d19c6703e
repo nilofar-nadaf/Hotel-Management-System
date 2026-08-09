@@ -1,0 +1,254 @@
+package hotel.management.system;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Reception extends JFrame implements ActionListener {
+
+    JButton newCustomer, rooms, department, employees;
+    JButton customerInfo, managerInfo, checkout;
+    JButton updateStatus, updateRoomStatus, pickupService;
+    JButton searchRoom, logout;
+
+    Reception() {
+
+        setTitle("Reception");
+        setBounds(250, 50, 1000, 700);
+        setLayout(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        // ================= BACKGROUND IMAGE =================
+
+        ImageIcon i1 = new ImageIcon(
+                getClass().getResource("/icons/reception.jpg")
+        );
+
+        Image i2 = i1.getImage().getScaledInstance(
+                1000,
+                700,
+                Image.SCALE_SMOOTH
+        );
+
+        ImageIcon i3 = new ImageIcon(i2);
+
+        JLabel image = new JLabel(i3);
+        image.setBounds(0, 0, 1000, 700);
+        add(image);
+
+        // ================= LEFT PANEL =================
+
+        JPanel panel = new JPanel();
+        panel.setLayout(null);
+        panel.setBounds(0, 0, 200, 700);
+        panel.setBackground(Color.BLACK);
+        image.add(panel);
+
+        Font btnFont = new Font("Tahoma", Font.BOLD, 14);
+
+        // ================= NEW CUSTOMER =================
+
+        newCustomer = new JButton("New Customer");
+        newCustomer.setBounds(20, 20, 160, 30);
+        newCustomer.setFont(btnFont);
+        newCustomer.addActionListener(this);
+        panel.add(newCustomer);
+
+        // ================= ROOMS =================
+
+        rooms = new JButton("Rooms");
+        rooms.setBounds(20, 65, 160, 30);
+        rooms.setFont(btnFont);
+        rooms.addActionListener(this);
+        panel.add(rooms);
+
+        // ================= DEPARTMENT =================
+
+        department = new JButton("Department");
+        department.setBounds(20, 110, 160, 30);
+        department.setFont(btnFont);
+        department.addActionListener(this);
+        panel.add(department);
+
+        // ================= ALL EMPLOYEES =================
+
+        employees = new JButton("All Employees");
+        employees.setBounds(20, 155, 160, 30);
+        employees.setFont(btnFont);
+        employees.addActionListener(this);
+        panel.add(employees);
+
+        // ================= CUSTOMER INFO =================
+
+        customerInfo = new JButton("Customer Info");
+        customerInfo.setBounds(20, 200, 160, 30);
+        customerInfo.setFont(btnFont);
+        customerInfo.addActionListener(this);
+        panel.add(customerInfo);
+
+        // ================= MANAGER INFO =================
+
+        managerInfo = new JButton("Manager Info");
+        managerInfo.setBounds(20, 245, 160, 30);
+        managerInfo.setFont(btnFont);
+        managerInfo.addActionListener(this);
+        panel.add(managerInfo);
+
+        // ================= CHECKOUT =================
+
+        checkout = new JButton("Checkout");
+        checkout.setBounds(20, 290, 160, 30);
+        checkout.setFont(btnFont);
+        checkout.addActionListener(this);
+        panel.add(checkout);
+
+        // ================= UPDATE STATUS =================
+        // This functionality is not available because
+        // UpdateStatus.java is not present in your project.
+
+        updateStatus = new JButton("Update Status");
+        updateStatus.setBounds(20, 335, 160, 30);
+        updateStatus.setFont(btnFont);
+        updateStatus.setEnabled(false);
+        panel.add(updateStatus);
+
+        // ================= UPDATE ROOM =================
+        // UpdateRoomStatus.java is not present.
+
+        updateRoomStatus = new JButton("Update Room");
+        updateRoomStatus.setBounds(20, 380, 160, 30);
+        updateRoomStatus.setFont(btnFont);
+        updateRoomStatus.setEnabled(false);
+        panel.add(updateRoomStatus);
+
+        // ================= PICKUP SERVICE =================
+        // PickupService.java is not present.
+
+        pickupService = new JButton("Pickup Service");
+        pickupService.setBounds(20, 425, 160, 30);
+        pickupService.setFont(btnFont);
+        pickupService.setEnabled(false);
+        panel.add(pickupService);
+
+        // ================= SEARCH ROOM =================
+
+        searchRoom = new JButton("Search Room");
+        searchRoom.setBounds(20, 470, 160, 30);
+        searchRoom.setFont(btnFont);
+        searchRoom.addActionListener(this);
+        panel.add(searchRoom);
+
+        // ================= LOGOUT =================
+
+        logout = new JButton("Logout");
+        logout.setBounds(20, 515, 160, 30);
+        logout.setFont(btnFont);
+        logout.addActionListener(this);
+        panel.add(logout);
+
+        // ================= SHOW WINDOW =================
+
+        setVisible(true);
+    }
+
+    // =====================================================
+    // ACTION PERFORMED
+    // =====================================================
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+
+        // ================= NEW CUSTOMER =================
+
+        if (ae.getSource() == newCustomer) {
+
+            new NewCustomer();
+
+        }
+
+        // ================= ROOMS =================
+
+        else if (ae.getSource() == rooms) {
+
+            new Rooms();
+
+        }
+
+        // ================= DEPARTMENT =================
+
+        else if (ae.getSource() == department) {
+
+            new Department();
+
+        }
+
+        // ================= ALL EMPLOYEES =================
+
+        else if (ae.getSource() == employees) {
+
+            new AllEmployees();
+
+        }
+
+        // ================= CUSTOMER INFO =================
+
+        else if (ae.getSource() == customerInfo) {
+
+            new CustomerInfo();
+
+        }
+
+        // ================= MANAGER INFO =================
+
+        else if (ae.getSource() == managerInfo) {
+
+            new ManagerInfo();
+
+        }
+
+        // ================= CHECKOUT =================
+
+        else if (ae.getSource() == checkout) {
+
+            new Checkout();
+
+        }
+
+        // ================= SEARCH ROOM =================
+
+        else if (ae.getSource() == searchRoom) {
+
+            new SearchRoom();
+
+        }
+
+        // ================= LOGOUT =================
+
+        else if (ae.getSource() == logout) {
+
+            int choice = JOptionPane.showConfirmDialog(
+                    this,
+                    "Are you sure you want to logout?",
+                    "Logout",
+                    JOptionPane.YES_NO_OPTION
+            );
+
+            if (choice == JOptionPane.YES_OPTION) {
+
+                dispose();
+
+                new Login();
+            }
+        }
+    }
+
+    // =====================================================
+    // MAIN METHOD
+    // =====================================================
+
+    public static void main(String[] args) {
+
+        new Reception();
+
+    }
+}
